@@ -120,7 +120,8 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
 
 
         //branch panel
-        Route::get('branch', [BranchController::class, 'viewBranch'])->name('viewBranch');
+        Route::view('branch', 'backend.branch.index')->name('viewBranch');
+        Route::get('pull-branch', [BranchController::class, 'pullBranch'])->name('pullBranch');
 
 
         Route::get('approve-admin', [AuthorizationController::class, 'approve_admin'])->name('admin.approve-admin');
