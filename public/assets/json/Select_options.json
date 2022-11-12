@@ -1,0 +1,93 @@
+[
+    {
+        "id": 1,
+        "optionName": "Gender",
+        "optionValue": "Gender",
+        "parentID": null,
+        "parentValue": null,
+        "group": "gender",
+        "type": "Group",
+        "remarks": "Group name",
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 2,
+        "optionName": "Female",
+        "optionValue": "Female",
+        "parentID": 1,
+        "parentValue": "Gender",
+        "group": "gender",
+        "type": "Option",
+        "remarks": null,
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 3,
+        "optionName": "Male",
+        "optionValue": "Male",
+        "parentID": 1,
+        "parentValue": "Gender",
+        "group": "gender",
+        "type": "Option",
+        "remarks": null,
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 4,
+        "optionName": "Third Gender",
+        "optionValue": "Third Gender",
+        "parentID": 1,
+        "parentValue": "Gender",
+        "group": "gender",
+        "type": "Option",
+        "remarks": null,
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 5,
+        "optionName": "Other",
+        "optionValue": "Other",
+        "parentID": 1,
+        "parentValue": "Gender",
+        "group": "gender",
+        "type": "Option",
+        "remarks": "Not specified",
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 6,
+        "optionName": "CCC",
+        "optionValue": "CCC",
+        "parentID": null,
+        "parentValue": null,
+        "group": "ccc",
+        "type": "Group",
+        "remarks": "Country Calling Code",
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    },
+    {
+        "id": 7,
+        "optionName": "BD +880",
+        "optionValue": "+880",
+        "parentID": 6,
+        "parentValue": "CCC",
+        "group": "ccc",
+        "type": "Option",
+        "remarks": "Bangladesh +880",
+        "isActive": 1,
+        "isAuth": 1,
+        "updated_at": "2022-10-19 21:56:09"
+    }
+]
