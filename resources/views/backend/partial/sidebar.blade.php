@@ -51,31 +51,10 @@
         <li class="menu-item">
             <a href="{{ route('adminPanel') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-user-circle"></i>
-                <div data-i18n="Analytics">Admin Panel</div>
+                <div data-i18n="Analytics">Admin Settings</div>
             </a>
         </li>
 
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings"> Admin Settings </div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{ route('admin.user') }}" class="menu-link">
-                        <div data-i18n="Account">All Admins</div>
-                    </a>
-                </li>
-
-                @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'editor')
-                <li class="menu-item">
-                    <a href="{{ route('admin.user.create') }}" class="menu-link">
-                        <div data-i18n="Account">Create New Admin</div>
-                    </a>
-                </li>
-                @endif
-            </ul>
-        </li>
         <!-- Authentications -->
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
