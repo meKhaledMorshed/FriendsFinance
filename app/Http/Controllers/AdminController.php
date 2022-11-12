@@ -130,6 +130,8 @@ class AdminController extends Controller
             ];
             DB::table('permissions')->insert($data) ?: throw new Exception('Permission not recorded.');
 
+            DB::table('users')->where('id', $request->uid)->update(['isAdmin' => 1]) ?: throw new Exception('User table not updated.');
+
             DB::commit();
             return back()->with('success', 'Admin successfully created.');
 
