@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthorizationController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CheckpostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistrationController;
@@ -116,6 +117,10 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         //admin panel  
         Route::get('admin-panel', [AdminController::class, 'viewAdminPanel'])->name('adminPanel');
         Route::post('admin-panel/{form?}', [AdminController::class, 'adminPanelForm'])->name('adminPanelForm');
+
+
+        //branch panel
+        Route::get('branch', [BranchController::class, 'viewBranch'])->name('viewBranch');
 
 
         Route::get('approve-admin', [AuthorizationController::class, 'approve_admin'])->name('admin.approve-admin');

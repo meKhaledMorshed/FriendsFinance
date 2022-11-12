@@ -27,83 +27,58 @@
 
         <!-- User -->
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
-                <div data-i18n="Account Settings"> Users Settings </div>
-            </a>
+            <a href="javascript:void(0);" class="menu-link menu-toggle"> Users Settings </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="{{ route('admin.user') }}" class="menu-link">
-                        <div data-i18n="Account">All Users</div>
-                    </a>
+                    <a href="{{ route('admin.user') }}" class="menu-link"> All Users </a>
                 </li>
 
                 @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'editor')
                 <li class="menu-item">
-                    <a href="{{ route('admin.user.create') }}" class="menu-link">
-                        <div data-i18n="Account">Create New User</div>
-                    </a>
+                    <a href="{{ route('admin.user.create') }}" class="menu-link"> Create New User </a>
                 </li>
                 @endif
             </ul>
         </li>
         <!-- Admin Links -->
         <li class="menu-item">
-            <a href="{{ route('adminPanel') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bxs-user-circle"></i>
-                <div data-i18n="Analytics">Admin Settings</div>
-            </a>
+            <a href="{{ route('adminPanel') }}" class="menu-link"> Admin Settings </a>
+        </li>
+        <!-- Branch Links -->
+        <li class="menu-item">
+            <a href="{{ route('viewBranch') }}" class="menu-link"> Branch </a>
         </li>
 
         <!-- Authentications -->
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-                <div data-i18n="Authentications">
-                    Authentications
-                </div>
-            </a>
+            <a href="javascript:void(0);" class="menu-link menu-toggle"> Authentications </a>
             <ul class="menu-sub">
 
                 @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'authorizer')
                 <li class="menu-item">
-                    <a href="{{ route('admin.approve-user') }}" class="menu-link">
-                        <div data-i18n="Basic">Approve User</div>
-                    </a>
+                    <a href="{{ route('admin.approve-user') }}" class="menu-link"> Approve User </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('admin.verifyUserAddress') }}" class="menu-link">
-                        <div data-i18n="Basic">Verify Address</div>
-                    </a>
+                    <a href="{{ route('admin.verifyUserAddress') }}" class="menu-link"> Verify Address </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('admin.verifyUserDocuments') }}" class="menu-link">
-                        <div data-i18n="Basic">Verify Documents</div>
-                    </a>
+                    <a href="{{ route('admin.verifyUserDocuments') }}" class="menu-link"> Verify Documents </a>
                 </li>
                 @endif
 
                 @if($admin->role == 'master' || $admin->role == 'super')
                 <li class="menu-item">
-                    <a href="{{ route('admin.approve-admin') }}" class="menu-link">
-                        <div data-i18n="Basic">Approve Admin</div>
-                    </a>
+                    <a href="{{ route('admin.approve-admin') }}" class="menu-link"> Approve Admin </a>
                 </li>
 
                 <li class="menu-item">
-                    <a href="{{ route('admin.reset_pass4u') }}" class="menu-link">
-                        <div data-i18n="Basic">
-                            Reset Password
-                        </div>
-                    </a>
+                    <a href="{{ route('admin.reset_pass4u') }}" class="menu-link"> Reset Password </a>
                 </li>
                 @endif
 
                 @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'accountant')
                 <li class="menu-item">
-                    <a href="{{ route('admin.approve-transection') }}" class="menu-link">
-                        <div data-i18n="Basic">Approve Transection</div>
-                    </a>
+                    <a href="{{ route('admin.approve-transection') }}" class="menu-link"> Approve Transection </a>
                 </li>
                 @endif
 
