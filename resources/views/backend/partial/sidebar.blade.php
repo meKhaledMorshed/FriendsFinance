@@ -48,6 +48,32 @@
         <li class="menu-item">
             <a href="{{ route('viewBranch') }}" class="menu-link"> Branch </a>
         </li>
+        <!-- Accounts Links -->
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle"> Account Section </a>
+            <ul class="menu-sub">
+
+                <li class="menu-item">
+                    <a href="{{ route('admin.approve-user') }}" class="menu-link"> View Accounts </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('addAccount') }}" class="menu-link"> Add Account </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.verifyUserAddress') }}" class="menu-link"> Add Nominee </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.verifyUserDocuments') }}" class="menu-link"> Account Catagory </a>
+                </li>
+
+
+            </ul>
+        </li>
+
+        <!-- Transection Links -->
+        <li class="menu-item">
+            <a href="{{ route('viewBranch') }}" class="menu-link"> Transection </a>
+        </li>
 
         <!-- Authentications -->
         <li class="menu-item">
@@ -66,23 +92,11 @@
                 </li>
                 @endif
 
-                @if($admin->role == 'master' || $admin->role == 'super')
-                <li class="menu-item">
-                    <a href="{{ route('admin.approve-admin') }}" class="menu-link"> Approve Admin </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="{{ route('admin.reset_pass4u') }}" class="menu-link"> Reset Password </a>
-                </li>
-                @endif
-
                 @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'accountant')
                 <li class="menu-item">
                     <a href="{{ route('admin.approve-transection') }}" class="menu-link"> Approve Transection </a>
                 </li>
                 @endif
-
-
 
 
             </ul>

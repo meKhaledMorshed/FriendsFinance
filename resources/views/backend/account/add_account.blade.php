@@ -1,6 +1,6 @@
 @extends('backend.master')
 
-@section('pageTitle', 'Branch | ' . config('app.name'))
+@section('pageTitle', 'Add Account | ' . config('app.name'))
 
 
 @section('content')
@@ -14,8 +14,8 @@
     <div class="card mb-2 views  " id="branchTableView">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Branch</h5>
-                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Add New</label>
+                <h5 class="mb-0">Add new Account</h5>
+                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">View Accounts</label>
             </div>
         </div>
         <div class="card-body">

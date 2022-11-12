@@ -1,0 +1,1 @@
+resources/views/backend/account/update_account.blade.php

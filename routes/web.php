@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\BranchController;
@@ -85,7 +86,7 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::post('user/update/{scope?}', [UserController::class, 'update'])->name('admin.postUpdateUser');
 
 
-        //
+        // 
     });
 
     Route::middleware('isAuthorizer')->group(function () {
@@ -114,7 +115,7 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::get('admin-panel/designations/{filter?}', [AdminController::class, 'handleGetDesignations'])->name('getDesignations');
         Route::post('admin-panel/designations', [AdminController::class, 'handlePostDesignations'])->name('postDesignations');
 
-        //admin panel  
+        //admin panel
         Route::get('admin-panel', [AdminController::class, 'viewAdminPanel'])->name('adminPanel');
         Route::post('admin-panel/{form?}', [AdminController::class, 'adminPanelForm'])->name('adminPanelForm');
 
@@ -122,6 +123,14 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         //branch panel
         Route::view('branch', 'backend.branch.index')->name('viewBranch');
         Route::get('pull-branch', [BranchController::class, 'pullBranch'])->name('pullBranch');
+        Route::post('branch', [BranchController::class, 'addOrUpdateBranch'])->name('addOrUpdateBranch');
+
+        //Account section
+
+        Route::get('account/{id?}', [AccountController::class, 'accountForm'])->name('accountForm');
+        Route::post('account/{form?}', [AccountController::class, 'postAccountForm'])->name('postAccountForm');
+
+        Route::view('account/add-nominee', 'backend.account.nominee')->name('addNominee');
 
 
         Route::get('approve-admin', [AuthorizationController::class, 'approve_admin'])->name('admin.approve-admin');
