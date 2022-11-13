@@ -224,7 +224,7 @@ class RegistrationController extends Controller
             ];
             for ($i = 1; $i <= 10; $i++) {
 
-                $categories['category'] = "Resarve Category $i";
+                $categories['category'] = "Reserve Category $i";
 
                 // save account_categories  
                 DB::table('account_categories')->insert($categories) ?? throw new Exception('Resarve categories not added.');

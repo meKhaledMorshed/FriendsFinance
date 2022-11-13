@@ -54,16 +54,16 @@
             <ul class="menu-sub">
 
                 <li class="menu-item">
-                    <a href="{{ route('admin.approve-user') }}" class="menu-link"> View Accounts </a>
+                    <a href="{{ route('account') }}" class="menu-link"> View Accounts </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('addAccount') }}" class="menu-link"> Add Account </a>
+                    <a href="{{ route('account') }}" class="menu-link"> Create Account </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('admin.verifyUserAddress') }}" class="menu-link"> Add Nominee </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('admin.verifyUserDocuments') }}" class="menu-link"> Account Catagory </a>
+                    <a href="{{ route('account.category') }}" class="menu-link"> Account Catagory </a>
                 </li>
 
 

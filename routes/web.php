@@ -126,11 +126,18 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::post('branch', [BranchController::class, 'addOrUpdateBranch'])->name('addOrUpdateBranch');
 
         //Account section
+        Route::get('account', [AccountController::class, 'index'])->name('account');
+        Route::post('account', [AccountController::class, 'postAccountForm'])->name('account.postForm');
 
-        Route::get('account/{id?}', [AccountController::class, 'accountForm'])->name('accountForm');
-        Route::post('account/{form?}', [AccountController::class, 'postAccountForm'])->name('postAccountForm');
+        //account category 
+        Route::get('account/category/pull/{filter?}', [AccountController::class, 'pullCategories'])->name('account.pullCategories');
+        Route::get('account/category/parent/{id?}', [AccountController::class, 'pullParentCategoryName'])->name('account.pullParentCategoryName');
 
-        Route::view('account/add-nominee', 'backend.account.nominee')->name('addNominee');
+        Route::get('account/category', [AccountController::class, 'accountCategoryForm'])->name('account.category');
+        Route::post('account/category', [AccountController::class, 'postAccountCategory'])->name('account.category.postForm');
+
+        //account nominee
+        Route::view('account/nominee/create', 'backend.account.nominee')->name('addNominee');
 
 
         Route::get('approve-admin', [AuthorizationController::class, 'approve_admin'])->name('admin.approve-admin');
