@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account_category;
 use App\Models\Select_option;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,8 +15,6 @@ class RegistrationController extends Controller
     public function createentity(Request $request)
     {
         $request->validate([
-            'name'    => 'required|max:255',
-            'email'   => 'required|email|max:100',
             'dob'     => 'required|date',
             'address' => 'min:10|max:255|nullable',
             'logo'    => 'required|image|mimes:jpg,jpeg,png,PNG | max:10240'
@@ -36,8 +35,8 @@ class RegistrationController extends Controller
 
             $entity = [];
             // put all data in array 
-            $entity['name']            = $request->name;
-            $entity['email']           = $request->email;
+            $entity['name']            = config('app.name'); // $request->name;
+            $entity['email']           = config('mail.mailers.smtp.username'); // $request->email;
             $entity['establishedDate'] = $request->dob;
             $entity['address']         = $request->address;
             $entity['logo']            = 'entity_logo.' . $request->logo->extension();
@@ -177,15 +176,18 @@ class RegistrationController extends Controller
                 'isAuth'     => 1,
                 'authBy'     => $uid
             ];
-            $titles = ['Chairman', 'MD', 'CEO'];
 
-            for ($i = 0; $i < count($titles); $i++) {
+            $titles = ['Chairman' => 'Chairman', 'MD' => 'Managing Director', 'CEO' => 'Chief Executive Officer'];
 
-                $title['title'] = $titles[$i];
+            foreach ($titles as $titleShort =>  $definition) {
+
+                $title['title']      = $titleShort;
+                $title['definition'] = $definition;
 
                 // save admin_titles (designations)
                 $titleID = DB::table('admin_titles')->insertGetId($title) ?? throw new Exception('admin_titles data not inserted.');
             }
+
             // array of admins  table 
             $admin = [
                 'uid'        => $uid,
@@ -215,19 +217,16 @@ class RegistrationController extends Controller
             // save permissions 
             DB::table('permissions')->insert($permit) ?? throw new Exception('Permissions not created.');
 
-            // Resarve account_categories array
-            $categories = [
-                'isActive'   => 0,
-                'insertedBy' => $uid,
-                'isAuth'     => 1,
-                'authBy'     => $uid
-            ];
-            for ($i = 1; $i <= 10; $i++) {
-
-                $categories['category'] = "Reserve Category $i";
+            // get account categories form json file
+            $file = file_exists('assets/json/account_categories.json');
+            if ($file) {
+                $categories = file_get_contents('assets/json/account_categories.json');
+                $categories = json_decode($categories, true);
 
                 // save account_categories  
-                DB::table('account_categories')->insert($categories) ?? throw new Exception('Resarve categories not added.');
+                foreach ($categories as $category) {
+                    DB::table('account_categories')->insert($category) ?? throw new Exception('Default categories not added.');
+                }
             }
 
             // code.. to hold session for login

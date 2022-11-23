@@ -38,6 +38,26 @@ class BranchController extends Controller
         }
     }
 
+    public function pullBranchName($id = null)
+    {
+        try {
+            if ($id == null) {
+                return response('No Branch ID given', 400);
+            }
+
+            $branch = Branch::find($id);
+            $branch != null ?: throw  new Exception('No data found.');
+            return response($branch->branchName, 200);
+
+            //end
+
+        } catch (\Exception $e) {
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from pullBranchName@BranchController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('No Branch found', 404);
+        }
+    }
+
     public function addOrUpdateBranch(Request $request)
     {
         try {

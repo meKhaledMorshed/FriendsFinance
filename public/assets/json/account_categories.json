@@ -1,0 +1,383 @@
+[
+ {
+  "id": 1,
+  "category": "Assets",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 2,
+  "category": "Liabilities",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 3,
+  "category": "Equity",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 4,
+  "category": "Revenue",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 5,
+  "category": "Expenses",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 6,
+  "category": "Reserve_1",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 7,
+  "category": "Reserve_2",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 8,
+  "category": "Reserve_3",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 9,
+  "category": "Reserve_4",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 10,
+  "category": "Reserve_5",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 11,
+  "category": "Reserve_6",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 12,
+  "category": "Reserve_7",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 13,
+  "category": "Reserve_8",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 14,
+  "category": "Reserve_9",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 15,
+  "category": "Reserve_10",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 16,
+  "category": "Reserve_11",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 17,
+  "category": "Reserve_12",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 18,
+  "category": "Reserve_13",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 19,
+  "category": "Reserve_14",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 20,
+  "category": "Reserve_15",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 21,
+  "category": "Reserve_16",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 22,
+  "category": "Reserve_17",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 23,
+  "category": "Reserve_18",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 24,
+  "category": "Reserve_19",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 25,
+  "category": "Reserve_20",
+  "remarks": "Reserve account categories",
+  "isActive": 0,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 26,
+  "category": "Bank Accounts",
+  "parentCatID": 1,
+  "tags": "Asset",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 27,
+  "category": "MFS Accounts",
+  "description": "Mobile Financial Service Accounts",
+  "parentCatID": 1,
+  "tags": "Asset",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 28,
+  "category": "Cash",
+  "description": "Cash in Hand",
+  "parentCatID": 1,
+  "tags": "Asset",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 29,
+  "category": "Investment",
+  "parentCatID": 1,
+  "tags": "Asset",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 30,
+  "category": "Savings Account",
+  "description": "General Savings Account",
+  "parentCatID": 2,
+  "tags": "Liability",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 31,
+  "category": "DPS",
+  "description": "Deposit Plus Scheme Account",
+  "parentCatID": 2,
+  "tags": "Liability",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 32,
+  "category": "FDR",
+  "description": "Fixed Deposit Receipt Account",
+  "parentCatID": 2,
+  "tags": "Liability",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 33,
+  "category": "Loan",
+  "description": "Loan Accounts",
+  "parentCatID": 2,
+  "tags": "Liability",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 34,
+  "category": "Capital",
+  "description": "Owner or member capital",
+  "parentCatID": 3,
+  "tags": "Equity",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 35,
+  "category": "Withdrawal",
+  "description": "Owner or member Withdrawal",
+  "parentCatID": 3,
+  "tags": "Equity",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 36,
+  "category": "ROI",
+  "description": "Return on Investment",
+  "parentCatID": 4,
+  "tags": "Revenue",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 37,
+  "category": "Charge & Fees - Income",
+  "description": "Income related Charge & Fees",
+  "parentCatID": 4,
+  "tags": "Revenue",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 38,
+  "category": "Utilities Expenses",
+  "parentCatID": 5,
+  "tags": "Expenses",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 39,
+  "category": "Charge & Fees - Expense",
+  "description": "Expense related Charge & Fees",
+  "parentCatID": 5,
+  "tags": "Expenses",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ },
+ {
+  "id": 40,
+  "category": "Office Expenses",
+  "parentCatID": 5,
+  "tags": "Expenses",
+  "isActive": 1,
+  "insertedBy": 1,
+  "isAuth": 1,
+  "authBy": 1
+ }
+]

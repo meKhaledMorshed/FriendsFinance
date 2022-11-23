@@ -1,6 +1,6 @@
 @extends('backend.master')
 
-@section('pageTitle', 'Add Account | ' . config('app.name'))
+@section('pageTitle', 'Account | ' . config('app.name'))
 
 
 @section('content')
@@ -17,21 +17,21 @@
                 <div class="col-6">
 
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0">Account Form</h5>
+                        <h5 class="mb-0" id="formTitle">Account Form</h5>
                         <div>
                             <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Add New</label>
-                            <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('view_2')">All Account</label>
+                            <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('view_2')">View Accounts</label>
                         </div>
                     </div>
 
-                    <form id="branchForm" method="POST">
+                    <form id="form" method="POST">
                         @csrf
 
                         <input type="hidden" class="form-control" name="id" id="id" disabled />
 
                         <div class="input-group input-group-sm mb-3">
                             <label for="uid" class="input-group-text igt-1">User ID</label>
-                            <input type="number" class="form-control w-25" id="uid" name="uid" required />
+                            <input type="number" class="form-control w-25" id="uid" name="uid" required onblur="pullUserName(this.value)" />
                             <input type="text" class="form-control w-50" id="username" name="username" placeholder="User Name of Account Holder" readonly />
                         </div>
 
@@ -55,7 +55,7 @@
                                         @forelse($categories as $category)
                                         <option value="{{$category->id}}">{{$category->category}}</option>
                                         @empty
-                                        <option selected disabled>No Category Found</option>
+                                        <option selected disabled>Add Category first</option>
                                         @endforelse
                                     </select>
                                 </div>
@@ -128,8 +128,15 @@
     <div class="card mb-2 views d-none" id="view_2">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Add new Account</h5>
-                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">View Accounts</label>
+                <h5 class="mb-0">Accounts</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Search...." onblur="loadAccounts(this.value)" />
+                        <span class="input-group-text" role="button"><i class='bx bx-search'></i></span>
+                    </div>
+                    <span class="d-none small" id="searchtaskIndicator"> <img src="/assets/img/icons/load-indicator.gif" height="15" /></span>
+                </div>
+                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Create Account</label>
             </div>
         </div>
         <div class="card-body">
@@ -137,9 +144,11 @@
                 <thead>
                     <tr class="text-center">
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Address</th>
+                        <th>Account Name</th>
+                        <th>Account Number</th>
+                        <th>Account Owner</th>
+                        <th>Category</th>
+                        <th>Branch</th>
                         <th>Remarks</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -187,62 +196,78 @@
 <script>
     //   
 
-    document.onload = loadbranches();
+    document.onload = loadAccounts();
 
-    async function loadbranches() {
-        const res = await fetch("{{ route('pullBranch') }}");
+    async function loadAccounts(filter = '') {
+
+        document.getElementById('searchtaskIndicator').classList.remove('d-none');
+
+        const res = await fetch("{{ route('account.pullAccounts') }}/" + filter);
 
         if (res.status == 200) {
-            await res.json().then(data => showBranchesData(data));
+            const Accounts = await res.json();
+            showAccounts(Accounts);
         } else {
+            document.getElementById('searchtaskIndicator').classList.add('d-none');
             let tBody = document.getElementById('tbl_body');
-            let tr = ` 
-                    <tr class="text-center">
-                        <td colspan="11">
-                            <div id="defaultRow">
-                                <img src="../assets/img/icons/load-indicator-4.gif" height="300" />
-                            </div>
-                        </td>
-                    </tr>
-
-                    `;
+            let tr = ` <tr class="text-center"> <td colspan="11">No data found for ${filter}.</td> </tr> `;
             tBody.innerHTML = tr;
         }
     }
 
-    function showBranchesData(branches) {
+    async function showAccounts(accounts) {
         let tBody = document.getElementById('tbl_body');
         let tr = '';
 
-        for (let branch of branches) {
+        for (let account of accounts) {
 
             let status;
-            branch.isAuth == null ? status = "Pending" : '';
-            branch.isAuth == -1 ? status = "Reject" : '';
-            branch.isAuth == 0 ? status = "Unauthorized" : '';
-            branch.isAuth == 1 ? status = "Authorized" : '';
-            branch.isActive == 0 && branch.isAuth == 1 ? status = "Inactive" : '';
-            branch.isActive == 1 && branch.isAuth == 1 ? status = "Active" : '';
+            account.isAuth == null ? status = "Pending" : '';
+            account.isAuth == -1 ? status = "Reject" : '';
+            account.isAuth == 0 ? status = "Unauthorized" : '';
+            account.isAuth == 1 ? status = "Authorized" : '';
+            account.isActive == 0 && account.isAuth == 1 ? status = "Inactive" : '';
+            account.isActive == 1 && account.isAuth == 1 ? status = "Active" : '';
 
-            let remarks = branch.remarks != null ? branch.remarks : '-';
+            const AccountNumber = () => {
+                let num = account.accountNumber.toString();
+                while (num.length < 10) num = "0" + num;
+                return num;
+            }
+
+            const pullUserName = await fetch("{{ route('admin.getUserName') }}/" + account.uid);
+            const UserName = pullUserName.status == 200 ? await pullUserName.text() : 'Data Missing';
+
+            const pullCategoryName = await fetch("{{ route('account.pullCategoryName') }}/" + account.catID);
+            const Category = pullCategoryName.status == 200 ? await pullCategoryName.text() : 'Data Missing';
+
+            const pullBranchName = await fetch("{{ route('pullBranchName') }}/" + account.branchID);
+            const Branch = pullBranchName.status == 200 ? await pullBranchName.text() : 'Data Missing';
+
+            let remarks = account.remarks != null ? account.remarks : '-';
 
             tr += ` 
                     <tr class="text-center">
-                        <td> ${branch.id}  </td>
-                        <td> ${branch.branchName}  </td>
-                        <td> ${branch.type}  </td>
-                        <td> ${branch.address}  </td>
+                        <td> ${account.id}  </td>
+                        <td> ${account.accountName}  </td>
+                        <td> ${ AccountNumber() }  </td>
+                        <td> ${UserName}  </td>
+                        <td> ${Category}  </td>
+                        <td> ${Branch}  </td>
                         <td> ${remarks}  </td>
                         <td> ${status}  </td>
                         <td> 
                             <button class="btn btn-sm btn-warning px-1" onclick="toggleView('update',{
                                     form:'update', 
-                                    id:'${branch.id}', 
-                                    name:'${branch.branchName}',  
-                                    type:'${branch.type}', 
-                                    isActive:'${branch.isActive}', 
-                                    isAuth:'${branch.isAuth}',   
-                                    address:'${branch.address}', 
+                                    id:'${account.id}', 
+                                    uid:'${account.uid}', 
+                                    user:'${UserName}', 
+                                    accountName:'${account.accountName}',  
+                                    accountNumber:'${ AccountNumber() }', 
+                                    branchID:'${account.branchID}', 
+                                    catID:'${account.catID}', 
+                                    isActive:'${account.isActive}', 
+                                    isAuth:'${account.isAuth}',   
                                     remarks:'${remarks}' })">
                                     
                                     <i class='bx bxs-edit'></i>
@@ -254,6 +279,7 @@
         }
 
         tBody.innerHTML = tr;
+        document.getElementById('searchtaskIndicator').classList.add('d-none');
     }
 
     function toggleView(view, data) {
@@ -263,48 +289,82 @@
             view.classList.add('d-none');
         }
 
-        if (view == 'viewBranches') {
-            document.getElementById('branchTableView').classList.remove('d-none');
-            loadbranches();
+        if (view == 'view_2') {
+            document.getElementById('view_2').classList.remove('d-none');
+            loadAccounts();
         }
         if (view == 'addNew') {
-            document.getElementById('branchFormView').classList.remove('d-none');
+            form.reset();
+            document.getElementById('view_1').classList.remove('d-none');
             document.getElementById('id').disabled = true;
-            branchForm.reset();
+            document.getElementById('category').disabled = false;
+            document.getElementById('branch').disabled = false;
+            document.getElementById('formTitle').innerHTML = 'Add New Account';
         }
         if (view == 'update') {
-            document.getElementById('branchFormView').classList.remove('d-none');
+            document.getElementById('view_1').classList.remove('d-none');
+
             document.getElementById('id').disabled = false;
+            document.getElementById('category').disabled = true;
+            document.getElementById('branch').disabled = true;
+
             document.getElementById('id').value = data.id;
-            document.getElementById('branchName').value = data.name;
-            document.getElementById('type').value = data.type;
-            document.getElementById('status').value = data.isActive;
+            document.getElementById('uid').value = data.uid;
+            document.getElementById('username').value = data.user;
+            document.getElementById('accountName').value = data.accountName;
+            document.getElementById('accountNumber').value = data.accountNumber;
+            document.getElementById('category').value = data.catID;
+            document.getElementById('branch').value = data.branchID;
+
+            if (data.isActive == 1) {
+                document.getElementById('active').checked = true;
+            } else {
+                document.getElementById('inactive').checked = true;
+            }
+
             document.getElementById('authorization').value = data.isAuth;
-            document.getElementById('address').value = data.address;
             document.getElementById('remarks').value = data.remarks;
+
+            document.getElementById('formTitle').innerHTML = 'Update Account';
         }
 
     }
 
-
-    const branchForm = document.getElementById('branchForm');
-    branchForm.addEventListener('submit', e => {
+    const form = document.getElementById('form');
+    form.addEventListener('submit', e => {
 
         e.preventDefault();
 
         document.getElementById('taskIndicator').classList.remove('d-none');
 
         const formdata = new FormData(e.target);
-        const url = "{{ route('addOrUpdateBranch') }}";
+        const url = "{{ route('account.postForm') }}";
 
         postdata(url, formdata).then(res => {
             taskIndicator.classList.add('d-none')
             if (res) {
-                branchForm.reset();
+                form.reset();
             }
         })
 
     })
+
+
+    // sned api request for username
+    async function pullUserName(uid) {
+        const res = await fetch("{{ route('admin.getUserName') }}/" + uid);
+        if (res.status == 200) {
+
+            const name = await res.text();
+            document.getElementById('username').value = name;
+            document.getElementById('accountName').value = name;
+
+        } else {
+            document.getElementById('username').value = '';
+            document.getElementById('accountName').value = '';
+            swal('Please input correct user id.');
+        }
+    }
 
     //
 </script>

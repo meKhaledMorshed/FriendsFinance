@@ -1,1 +1,0 @@
-resources/views/backend/account/add_nominee.blade.php

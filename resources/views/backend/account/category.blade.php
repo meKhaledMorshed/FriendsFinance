@@ -11,7 +11,7 @@
 
     <!-- ----------------------------------------------------------- view-1 ------------------------------------------------------------------------ -->
 
-    <div class="card mb-2 views " id="view_1">
+    <div class="card mb-2 views d-none" id="view_1">
         <div class="card-body">
             <div class="row">
                 <div class="col-6">
@@ -36,14 +36,14 @@
 
                         <div class="input-group input-group-sm mb-3">
                             <label for="parent" class="input-group-text igt-1">Parent Category</label>
-                            <select class="form-select" id="parent" name="parent">
-                                <option selected disabled value="">Select Parent Category if Any</option>
+                            <select class="form-select" id="parent" name="parent" title="Select Parent Category if Any">
+                                <option selected value="">No Parent</option>
+                                <!-- <option value="">No Parent</option> -->
                                 @forelse($categories as $category)
                                 <option value="{{$category->id}}">{{$category->category}}</option>
                                 @empty
                                 <option selected disabled value="">No Category Found</option>
                                 @endforelse
-                                <option value="">No Parent</option>
                             </select>
                         </div>
 
@@ -104,7 +104,7 @@
     </div>
 
     <!-- ----------------------------------------------------------- view-2 ------------------------------------------------------------------------ -->
-    <div class="card mb-2 views d-none" id="view_2">
+    <div class="card mb-2 views" id="view_2">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h5 class="mb-0">Account Categories</h5>
@@ -171,6 +171,7 @@
 <script>
     //   
 
+    document.onload = loadDatas();
 
     async function loadDatas(filter = '') {
 
@@ -208,7 +209,7 @@
             let tags = data.tags != null ? data.tags : '';
             let remarks = data.remarks != null ? data.remarks : '';
 
-            const res = await fetch("{{ route('account.pullParentCategoryName') }}/" + data.parentCatID);
+            const res = await fetch("{{ route('account.pullCategoryName') }}/" + data.parentCatID);
 
             const parent = data.parentCatID != null ? await res.text() : '';
 

@@ -123,15 +123,17 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         //branch panel
         Route::view('branch', 'backend.branch.index')->name('viewBranch');
         Route::get('pull-branch', [BranchController::class, 'pullBranch'])->name('pullBranch');
+        Route::get('pull-branch-name/{id?}', [BranchController::class, 'pullBranchName'])->name('pullBranchName');
         Route::post('branch', [BranchController::class, 'addOrUpdateBranch'])->name('addOrUpdateBranch');
 
         //Account section
         Route::get('account', [AccountController::class, 'index'])->name('account');
         Route::post('account', [AccountController::class, 'postAccountForm'])->name('account.postForm');
+        Route::get('account/pull/{filter?}', [AccountController::class, 'pullAccounts'])->name('account.pullAccounts');
 
         //account category 
         Route::get('account/category/pull/{filter?}', [AccountController::class, 'pullCategories'])->name('account.pullCategories');
-        Route::get('account/category/parent/{id?}', [AccountController::class, 'pullParentCategoryName'])->name('account.pullParentCategoryName');
+        Route::get('account/category/name/pull/{id?}', [AccountController::class, 'pullCategoryName'])->name('account.pullCategoryName');
 
         Route::get('account/category', [AccountController::class, 'accountCategoryForm'])->name('account.category');
         Route::post('account/category', [AccountController::class, 'postAccountCategory'])->name('account.category.postForm');

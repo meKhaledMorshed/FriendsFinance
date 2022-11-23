@@ -41,23 +41,21 @@
                             <div class="mb-3 row">
                                 <label for="name" class="col-3">Name</label>
                                 <div class="col-9">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Entity Name" value="{{old('name')}}" autofocus required />
-                                    @error('name') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <input type="text" class="form-control" value="{{config('app.name')}}" readonly />
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
                                 <label for="html5-email-input" class="col-md-3 col-form-label">Email</label>
                                 <div class="col-md-9">
-                                    <input class="form-control" type="email" name="email" placeholder="admin@example.com" value="{{old('email')}}" id="html5-email-input" required />
-                                    @error('email') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <input class="form-control" type="email" value="{{ config('mail.mailers.smtp.username') }}" readonly />
                                 </div>
                             </div>
 
                             <div class="mb-3 row">
                                 <label for="html5-date-input" class="col-md-5 col-form-label" title="Entity established Date.">Established Date</label>
                                 <div class="col-md-7">
-                                    <input class="form-control" type="date" name="dob" id="html5-date-input" value="{{old('dob')}}" required />
+                                    <input class="form-control" type="date" name="dob" id="html5-date-input" value="{{old('dob')}}" required autofocus />
                                     @error('dob') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

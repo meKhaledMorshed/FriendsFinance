@@ -5,7 +5,7 @@
 <!-- Content -->
 @section('content')
 
-<h4 class="mb-2">Welcome to {{ $entity->name }} ! </h4>
+<!-- <h4 class="mb-2">Welcome to {{ $entity->name }} ! </h4> -->
 <p class="mb-4">Please add core Admin to start the adventure</p>
 
 @if(session()->has('error'))
@@ -45,23 +45,30 @@
             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
     </div>
-    <div class="mb-3 row g-1">
-        <label for="html5-tel-input" class="col-md-3 col-form-label">Mobile</label>
 
-        <div class="col-md-4">
-            <select class="form-select" name="ccc" aria-label="Default select example">
-                @foreach($cccs as $ccc)
-                <option value="{{$ccc->optionValue}}">{{$ccc->optionName}}</option>
-                @endforeach
-            </select>
-            @error('ccc') <span class="text-danger">{{ $message }}</span> @enderror
+    <div class="mb-3">
+
+        <div class="mb-3">
+            <div class="row  g-1">
+                <div class="col-md-6">
+                    <select class="form-select" name="ccc" aria-label="Default select example">
+                        @foreach($cccs as $ccc)
+                        <option value="{{$ccc->optionValue}}">{{$ccc->optionName}}</option>
+                        @endforeach
+                    </select>
+                    @error('ccc') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-md-6" style="display: flex; align-items: center; gap: 10px;">
+                    <input class="form-control" type="tel" name="tel" pattern="[0-9]{10}" value="{{old('tel')}}" placeholder="1824608637" id="html5-tel-input" required />
+                    @error('tel') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+            </div>
         </div>
 
-        <div class="col-md-5" style="display: flex; align-items: center; gap: 10px;">
-            <input class="form-control" type="tel" name="tel" pattern="[0-9]{10}" value="{{old('tel')}}" placeholder="1824608637" id="html5-tel-input" required />
-            @error('tel') <span class="text-danger">{{ $message }}</span> @enderror
-        </div>
     </div>
+
+
     <div class="mb-3 row g-1 form-password-toggle">
         <label for="password" class="col-md-3 col-form-label">Password</label>
         <div class="col-md-9">

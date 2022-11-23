@@ -54,13 +54,10 @@
             <ul class="menu-sub">
 
                 <li class="menu-item">
-                    <a href="{{ route('account') }}" class="menu-link"> View Accounts </a>
-                </li>
-                <li class="menu-item">
                     <a href="{{ route('account') }}" class="menu-link"> Create Account </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('admin.verifyUserAddress') }}" class="menu-link"> Add Nominee </a>
+                    <a href="{{ route('account') }}" class="menu-link"> Add Nominee </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('account.category') }}" class="menu-link"> Account Catagory </a>
@@ -72,8 +69,26 @@
 
         <!-- Transection Links -->
         <li class="menu-item">
-            <a href="{{ route('viewBranch') }}" class="menu-link"> Transection </a>
+            <a href="javascript:void(0);" class="menu-link menu-toggle"> Transactions </a>
+            <ul class="menu-sub">
+
+                <li class="menu-item">
+                    <a href="{{ route('account') }}" class="menu-link"> Show Transactions </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('account') }}" class="menu-link"> Add Transactions </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('account.category') }}" class="menu-link"> Record Bank Deposit </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('account.category') }}" class="menu-link"> Record Withdrawal </a>
+                </li>
+
+
+            </ul>
         </li>
+
 
         <!-- Authentications -->
         <li class="menu-item">

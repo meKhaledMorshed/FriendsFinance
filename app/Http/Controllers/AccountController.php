@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Account_category;
 use App\Models\Branch;
 use Exception;
@@ -33,7 +34,124 @@ class AccountController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'Something Error.');
         }
     }
+    public function postAccountForm(Request $request)
+    {
+        try {
 
+            $request->validate([
+                'id'            => 'nullable|exists:accounts,id',
+                'uid'           => 'required|exists:users,id',
+                'accountName'   => 'required|string|max:100',
+                'category'      => 'nullable|exists:account_categories,id',
+                'branch'        => 'nullable|exists:branches,id',
+                'status'        => 'nullable|boolean',
+                'authorization' => 'nullable|in:-1,0,1',
+                'remarks'       => 'nullable|string|max:255'
+            ]);
+
+            if ((!isset($request->id) || $request->id == null) && $request->category == null) {
+                return response('Please select a category.', 406);
+            }
+            if ((!isset($request->id) || $request->id == null) && $request->branch == null) {
+                return response('Please select a Branch.', 406);
+            }
+
+            $totalAccountExist = Account::where('branchID', $request->branch)->where('catID', $request->category)->count();
+
+            $account = [
+                'uid'           => $request->uid,
+                'accountName'   => $request->accountName,
+                'remarks'       => $request->remarks,
+                'isActive'      => $request->status,
+                'isAuth'        => $request->authorization,
+                'authBy'        => $request->authorization == null ?:  $this->adminUID()
+            ];
+
+            DB::beginTransaction();
+
+            if (isset($request->id) && $request->id != null) {
+                $account['modifiedBy'] = $this->adminUID();
+                DB::table('accounts')->where('id', $request->id)->update($account) ?: throw new Exception('Account not Updated.');
+            } else {
+                $account['branchID'] = $request->branch;
+                $account['catID'] = $request->category;
+                $account['accountNumber'] = sprintf('%03d', $request->branch) . sprintf('%03d', $request->category) . sprintf('%04d', $totalAccountExist + 1);
+                $account['insertedBy'] = $this->adminUID();
+                DB::table('accounts')->insert($account) ?: throw new Exception('Account not Created.');
+            }
+
+            DB::commit();
+            return response('Request successfully executed.', 201);
+
+            //end
+        } catch (\Exception $e) {
+            DB::rollBack();
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from postAccountForm@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('Request not executed', 406);
+        }
+    }
+
+    public function pullAccounts($filter = null)
+    {
+        try {
+
+            if ($filter == null) {
+                $accounts = Account::where('isAuth', 1)->latest('modifiedDate')->limit(10)->get();
+                $accounts->count() > 0 ?: throw  new Exception('No data found.');
+                return response($accounts->toJson(), 200);
+            }
+
+            $filter = strtolower($filter);
+
+            if ($filter == 'all') {
+                $accounts = Account::latest('modifiedDate')->get();
+                $accounts->count() > 0 ?: throw  new Exception('No data found.');
+                return response($accounts->toJson(), 200);
+            }
+
+            $filters = ['active' => 1, 'inactive' => 0];
+
+            if (array_key_exists($filter, $filters)) {
+                $filter = $filters[$filter];
+
+                $accounts = Account::where('isActive', $filter)->latest('modifiedDate')->limit(10)->get();
+                $accounts->count() > 0 ?: throw  new Exception('No data found.');
+                return response($accounts->toJson(), 200);
+            }
+
+            $filters = ['authorize' => 1, 'unauthorized' => 0, 'reject' => -1, 'pending' => null];
+
+            if (array_key_exists($filter, $filters)) {
+                $filter = $filters[$filter];
+
+                $accounts = Account::where('isAuth', $filter)->latest('modifiedDate')->limit(10)->get();
+                $accounts->count() > 0 ?: throw  new Exception('No data found.');
+                return response($accounts->toJson(), 200);
+            }
+
+            if ($filter != null) {
+                $accounts = Account::where('id', $filter)
+                    ->orwhere('branchID', 'like', '%' . $filter . '%')
+                    ->orwhere('catID', 'like', '%' . $filter . '%')
+                    ->orwhere('accountName', 'like', '%' . $filter . '%')
+                    ->orwhere('accountNumber', 'like', '%' . $filter . '%')
+                    ->orwhere('remarks', 'like', '%' . $filter . '%')
+                    ->latest('modifiedDate')->limit(10)->get();
+                $accounts->count() > 0 ?: throw  new Exception('No data found.');
+                return response($accounts->toJson(), 200);
+            }
+
+            throw  new Exception('No data found.');
+
+            //end
+
+        } catch (\Exception $e) {
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from pullAccounts@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('No Account found', 404);
+        }
+    }
 
     /* ================================================ Category ================================================ */
 
@@ -96,11 +214,11 @@ class AccountController extends Controller
             return response('No category found', 404);
         }
     }
-    public function pullParentCategoryName($id = null)
+    public function pullCategoryName($id = null)
     {
         try {
             if ($id == null) {
-                return response('No parent ID given', 400);
+                return response('No Category ID given', 400);
             }
 
             $parent = Account_category::find($id);
