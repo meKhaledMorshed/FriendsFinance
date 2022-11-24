@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Account_category;
 use App\Models\Branch;
+use App\Models\Nominee;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -376,7 +377,7 @@ class AccountController extends Controller
                 }
             }
 
-            if ((!isset($request->id) || $request->id != null) && $request->photo == null) {
+            if ((!isset($request->id) || $request->id == null) && $request->photo == null) {
                 return response("Nominee Photo is required.", 406);
             }
 
@@ -412,7 +413,7 @@ class AccountController extends Controller
                 }
 
                 $nominee['modifiedBy'] = $this->adminUID();
-                DB::table('nominees')->where('id', $request->id)->update($nominee) ?: throw new Exception('Account not Updated.');
+                DB::table('nominees')->where('id', $request->id)->update($nominee) ?: throw new Exception('Nominee not Updated.');
 
                 // move photo to server folder
                 if ($request->hasfile('photo')) {
@@ -422,7 +423,7 @@ class AccountController extends Controller
                 }
             } else {
                 $nominee['insertedBy'] = $this->adminUID();
-                DB::table('nominees')->insert($nominee) ?: throw new Exception('Account not Created.'); // move photo to server folder 
+                DB::table('nominees')->insert($nominee) ?: throw new Exception('Nominee not Created.'); // move photo to server folder 
                 $request->photo->move(public_path('assets/photos'), $nominee['photo']) ?: throw new Exception('Nominee photo not moved to folder.');
             }
 
@@ -437,6 +438,71 @@ class AccountController extends Controller
             return response('Request not executed', 406);
         }
     }
+
+    public function pullNominees($filter = null)
+    {
+        try {
+
+            if ($filter == null) {
+                $results = Nominee::where('isAuth', 1)->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            $filter = strtolower($filter);
+
+            if ($filter == 'all') {
+                $results = Nominee::latest('modifiedDate')->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            $filters = ['active' => 1, 'inactive' => 0];
+
+            if (array_key_exists($filter, $filters)) {
+                $filter = $filters[$filter];
+
+                $results = Nominee::where('isActive', $filter)->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            $filters = ['authorize' => 1, 'unauthorized' => 0, 'reject' => -1, 'pending' => null];
+
+            if (array_key_exists($filter, $filters)) {
+                $filter = $filters[$filter];
+
+                $results = Nominee::where('isAuth', $filter)->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            if ($filter != null) {
+                $results = Nominee::where('id', $filter)
+                    ->orwhere('accountNum', 'like', '%' . $filter . '%')
+                    ->orwhere('name', 'like', '%' . $filter . '%')
+                    ->orwhere('nid', 'like', '%' . $filter . '%')
+                    ->orwhere('passport', 'like', '%' . $filter . '%')
+                    ->orwhere('email', 'like', '%' . $filter . '%')
+                    ->orwhere('mobile', 'like', '%' . $filter . '%')
+                    ->orwhere('address', 'like', '%' . $filter . '%')
+                    ->orwhere('remarks', 'like', '%' . $filter . '%')
+                    ->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            throw  new Exception('No data found.');
+
+            //end
+
+        } catch (\Exception $e) {
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from pullNominees@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('No data found', 404);
+        }
+    }
+
 
 
     // end class

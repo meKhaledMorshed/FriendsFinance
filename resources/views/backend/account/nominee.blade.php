@@ -189,15 +189,15 @@
     <div class="card mb-2 views d-none" id="view_2">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Accounts</h5>
+                <h5 class="mb-0">Account Nominees</h5>
                 <div class="d-flex align-items-center gap-2">
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control" placeholder="Search...." onblur="loadAccounts(this.value)" />
+                        <input type="text" class="form-control" placeholder="Search...." onblur="loadNominees(this.value)" />
                         <span class="input-group-text" role="button"><i class='bx bx-search'></i></span>
                     </div>
                     <span class="d-none small" id="searchtaskIndicator"> <img src="/assets/img/icons/load-indicator.gif" height="15" /></span>
                 </div>
-                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Create Account</label>
+                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Create Nominee</label>
             </div>
         </div>
         <div class="card-body">
@@ -205,11 +205,12 @@
                 <thead>
                     <tr class="text-center">
                         <th>ID</th>
-                        <th>Account Name</th>
-                        <th>Account Number</th>
-                        <th>Account Owner</th>
-                        <th>Category</th>
-                        <th>Branch</th>
+                        <th>Account</th>
+                        <th>Nominee</th>
+                        <th>Birthday</th>
+                        <th>Gender</th>
+                        <th>Relation</th>
+                        <th>Share</th>
                         <th>Remarks</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -257,9 +258,9 @@
 <script>
     //   
 
-    document.onload = loanNominees();
+    document.onload = loadNominees();
 
-    async function loanNominees(filter = '') {
+    async function loadNominees(filter = '') {
 
         document.getElementById('searchtaskIndicator').classList.remove('d-none');
 
@@ -290,41 +291,48 @@
             nominee.isActive == 0 && nominee.isAuth == 1 ? status = "Inactive" : '';
             nominee.isActive == 1 && nominee.isAuth == 1 ? status = "Active" : '';
 
-            const nomineeNumber = () => {
-                let num = nominee.nomineeNumber.toString();
+            const AccountNumber = () => {
+                let num = nominee.accountNum.toString();
                 while (num.length < 10) num = "0" + num;
                 return num;
             }
 
-            // const pullUserName = await fetch("{{ route('admin.getUserName') }}/" + nominee.uid);
-            // const UserName = pullUserName.status == 200 ? await pullUserName.text() : 'Data Missing';
-
-
-            let remarks = nominee.remarks != null ? nominee.remarks : '-';
+            const Email = nominee.email != null ? nominee.email : '';
+            const Mobile = nominee.mobile != null ? nominee.mobile : '';
+            const NID = nominee.nid != null ? nominee.nid : '';
+            const Passport = nominee.passport != null ? nominee.passport : '';
+            const Address = nominee.address != null ? nominee.address : '';
+            const Remarks = nominee.remarks != null ? nominee.remarks : '';
 
             tr += ` 
                     <tr class="text-center">
                         <td> ${nominee.id}  </td>
-                        <td> ${nominee.nomineeName}  </td>
-                        <td> ${ nomineeNumber() }  </td>
-                        <td> ${UserName}  </td>
-                        <td> ${Category}  </td>
-                        <td> ${Branch}  </td>
-                        <td> ${remarks}  </td>
+                        <td> ${AccountNumber()}  </td>
+                        <td> ${nominee.name}  </td>
+                        <td> ${nominee.birthday}  </td>
+                        <td> ${nominee.gender}  </td>
+                        <td> ${nominee.relation}  </td>
+                        <td> ${nominee.percentage} %  </td>   
+                        <td> ${Remarks}  </td>
                         <td> ${status}  </td>
                         <td> 
                             <button class="btn btn-sm btn-warning px-1" onclick="toggleView('update',{
                                     form:'update', 
                                     id:'${nominee.id}', 
-                                    uid:'${nominee.uid}', 
-                                    user:'${UserName}', 
-                                    nomineeName:'${nominee.nomineeName}',  
-                                    nomineeNumber:'${ nomineeNumber() }', 
-                                    branchID:'${nominee.branchID}', 
-                                    catID:'${nominee.catID}', 
+                                    name:'${nominee.name}', 
+                                    accountNumber:'${AccountNumber()}', 
+                                    gender:'${nominee.gender}',  
+                                    dob:'${  nominee.birthday }', 
+                                    relation:'${nominee.relation}', 
+                                    share:'${nominee.percentage}', 
+                                    email:'${Email}', 
+                                    mobile:'${Mobile}', 
+                                    nid:'${NID}', 
+                                    passport:'${Passport}', 
+                                    address:'${Address}', 
                                     isActive:'${nominee.isActive}', 
                                     isAuth:'${nominee.isAuth}',   
-                                    remarks:'${remarks}' })">
+                                    remarks:'${Remarks}' })">
                                     
                                     <i class='bx bxs-edit'></i>
                             </button>
@@ -347,30 +355,31 @@
 
         if (view == 'view_2') {
             document.getElementById('view_2').classList.remove('d-none');
-            loadAccounts();
+            loadNominees();
         }
         if (view == 'addNew') {
             form.reset();
             document.getElementById('view_1').classList.remove('d-none');
             document.getElementById('id').disabled = true;
-            document.getElementById('category').disabled = false;
-            document.getElementById('branch').disabled = false;
-            document.getElementById('formTitle').innerHTML = 'Add New Account';
+            document.getElementById('formTitle').innerHTML = 'Add Nominee';
         }
         if (view == 'update') {
             document.getElementById('view_1').classList.remove('d-none');
 
             document.getElementById('id').disabled = false;
-            document.getElementById('category').disabled = true;
-            document.getElementById('branch').disabled = true;
 
             document.getElementById('id').value = data.id;
-            document.getElementById('uid').value = data.uid;
-            document.getElementById('username').value = data.user;
-            document.getElementById('accountName').value = data.accountName;
             document.getElementById('accountNumber').value = data.accountNumber;
-            document.getElementById('category').value = data.catID;
-            document.getElementById('branch').value = data.branchID;
+            document.getElementById('name').value = data.name;
+            document.getElementById('dob').value = data.dob;
+            document.getElementById('gender').value = data.gender;
+            document.getElementById('relation').value = data.relation;
+            document.getElementById('share').value = data.share;
+            document.getElementById('email').value = data.email;
+            document.getElementById('mobile').value = data.mobile;
+            document.getElementById('nid').value = data.nid;
+            document.getElementById('passport').value = data.mobile;
+            document.getElementById('address').value = data.address;
 
             if (data.isActive == 1) {
                 document.getElementById('active').checked = true;
@@ -378,10 +387,19 @@
                 document.getElementById('inactive').checked = true;
             }
 
-            document.getElementById('authorization').value = data.isAuth;
+            if (data.isAuth == 1) {
+                document.getElementById('authorize').checked = true;
+            } else if (data.isAuth == 0) {
+                document.getElementById('unauthorize').checked = true;
+            } else if (data.isAuth == -1) {
+                document.getElementById('reject').checked = true;
+            } else {
+                document.getElementById('hold').checked = true;
+            }
+
             document.getElementById('remarks').value = data.remarks;
 
-            document.getElementById('formTitle').innerHTML = 'Update Account';
+            document.getElementById('formTitle').innerHTML = 'Update Account Nominee';
         }
 
     }
