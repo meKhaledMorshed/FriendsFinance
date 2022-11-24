@@ -57,7 +57,7 @@
                     <a href="{{ route('account') }}" class="menu-link"> Create Account </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('account') }}" class="menu-link"> Add Nominee </a>
+                    <a href="{{ route('account.nominee') }}" class="menu-link"> Add Nominee </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('account.category') }}" class="menu-link"> Account Catagory </a>

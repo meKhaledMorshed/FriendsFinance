@@ -153,6 +153,25 @@ class AccountController extends Controller
         }
     }
 
+    public function getAccountName($number = null)
+    {
+        try {
+            if ($number == null) {
+                return response('No account number given', 400);
+            }
+
+            $name = Account::where('accountNumber', $number)->first('accountName');
+            $name != null ?: throw  new Exception('No account found.');
+            return response($name->accountName, 200);
+
+            //end
+
+        } catch (\Exception $e) {
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from getAccountName@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('No match.', 404);
+        }
+    }
     /* ================================================ Category ================================================ */
 
     public function pullCategories($filter = null)
@@ -229,7 +248,7 @@ class AccountController extends Controller
 
         } catch (\Exception $e) {
             date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from pullParentCategoryName@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            error_log("Error from pullCategoryName@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
             return response('No Parent category found', 404);
         }
     }
@@ -313,4 +332,86 @@ class AccountController extends Controller
             return response('Data not inserted', 401);
         }
     }
+
+
+    /* ================================================ Nominee ================================================ */
+
+
+    public function postNomineeForm(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'id'             => 'nullable|exists:nominees,id',
+                'accountNumber'  => 'required|exists:accounts,accountNumber',
+                'name'           => 'required|string|max:100',
+                'dob'            => 'required|date|after:01/01/1970|before:tomorrow',
+                'gender'         => 'required|exists:select_options,optionValue',
+                'relation'       => 'required|in:Mother,Father,Brother,Sister,Spouse,Other',
+                'share'          => 'required|numiric|min:1|max:100',
+                'email'          => 'nullable|email|max:100',
+                'mobile'         => 'nullable|max:20',
+                'nid'            => 'nullable|regex:/[A-Za-z0-9]{8,25}/',
+                'passport'       => 'nullable|regex:/[A-Za-z0-9]{8,25}/',
+                'address'        => 'nullable|string|max:255',
+                'remarks'        => 'nullable|string|max:255',
+                'photo'          => 'nullable|image|mimes:jpg,jpeg,png,JPG,JPEG,PNG | max:102400',
+                'status'         => 'nullable|boolean',
+                'authorization'  => 'nullable|in:-1,0,1'
+            ]);
+
+            $ck_inputs = [
+                'name'      => 'Nominee name is required',
+                'dob'       => 'Nominee birthday is required',
+                'gender'    => 'Nominee gender is required',
+                'dob'       => 'Nominee birthday is required',
+                'dob'       => 'Nominee birthday is required',
+                'dob'       => 'Nominee birthday is required',
+            ];
+
+            if ((!isset($request->id) || $request->id == null) && $request->category == null) {
+                return response('Please select a category.', 406);
+            }
+            if ((!isset($request->id) || $request->id == null) && $request->branch == null) {
+                return response('Please select a Branch.', 406);
+            }
+
+            $totalAccountExist = Account::where('branchID', $request->branch)->where('catID', $request->category)->count();
+
+            $account = [
+                'uid'           => $request->uid,
+                'accountName'   => $request->accountName,
+                'remarks'       => $request->remarks,
+                'isActive'      => $request->status,
+                'isAuth'        => $request->authorization,
+                'authBy'        => $request->authorization == null ?:  $this->adminUID()
+            ];
+
+            DB::beginTransaction();
+
+            if (isset($request->id) && $request->id != null) {
+                $account['modifiedBy'] = $this->adminUID();
+                DB::table('accounts')->where('id', $request->id)->update($account) ?: throw new Exception('Account not Updated.');
+            } else {
+                $account['branchID'] = $request->branch;
+                $account['catID'] = $request->category;
+                $account['accountNumber'] = sprintf('%03d', $request->branch) . sprintf('%03d', $request->category) . sprintf('%04d', $totalAccountExist + 1);
+                $account['insertedBy'] = $this->adminUID();
+                DB::table('accounts')->insert($account) ?: throw new Exception('Account not Created.');
+            }
+
+            DB::commit();
+            return response('Request successfully executed.', 201);
+
+            //end
+        } catch (\Exception $e) {
+            DB::rollBack();
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from postAccountForm@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('Request not executed', 406);
+        }
+    }
+
+
+    // end class
 }

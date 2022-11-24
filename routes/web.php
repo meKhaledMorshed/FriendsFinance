@@ -104,7 +104,8 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::get('change-user-documents-status/{change?}/{id?}', [AuthorizationController::class, 'changeUserDocumentStatus'])->name('admin.changeUserDocumentStatus');
 
 
-        Route::get('nominee-authorization', [AuthorizationController::class, 'nominee_authorization'])->name('admin.approve-nominee');
+        // Route::get('nominee-authorization', [AuthorizationController::class, 'nominee_authorization'])->name('admin.approve-nominee');
+        // Route::get('approve-account', [AuthorizationController::class, 'approve_account'])->name('admin.approve-account');
     });
 
     // need middleware for only master & super admin
@@ -139,7 +140,10 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::post('account/category', [AccountController::class, 'postAccountCategory'])->name('account.category.postForm');
 
         //account nominee
-        Route::view('account/nominee/create', 'backend.account.nominee')->name('addNominee');
+        Route::view('account/nominee', 'backend.account.nominee')->name('account.nominee');
+        Route::post('account/nominee', [AccountController::class, 'postNomineeForm'])->name('account.nominee.postForm');
+
+        Route::get('account/nominee/pull/{filter?}', [AccountController::class, 'pullNominees'])->name('account.pullNominees');
 
 
         Route::get('approve-admin', [AuthorizationController::class, 'approve_admin'])->name('admin.approve-admin');
@@ -158,7 +162,6 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
     });
 
     // need middleware for only master & super admin and accountent & teller
-    Route::get('approve-account', [AuthorizationController::class, 'approve_account'])->name('admin.approve-account');
     Route::get('approve-transection', [AuthorizationController::class, 'approve_transection'])->name('admin.approve-transection');
 
 
@@ -171,6 +174,8 @@ Route::middleware('isAdmin')->prefix('api/admin')->group(function () {
 
     // api's for user name 
     Route::get('username/{id?}', [UserController::class, 'getUserName'])->name('admin.getUserName');
+    // api's for Account name 
+    Route::get('account-name/{number?}', [AccountController::class, 'getAccountName'])->name('admin.getAccountName');
 
 
     // End Admin API Route Group 
