@@ -73,17 +73,23 @@
             <ul class="menu-sub">
 
                 <li class="menu-item">
-                    <a href="{{ route('account') }}" class="menu-link"> Show Transactions </a>
+                    <a href="{{ route('transaction.view') }}" class="menu-link"> Show Transactions </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('transaction.create') }}" class="menu-link"> Add Transactions </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('account.category') }}" class="menu-link"> Record Bank Deposit </a>
+                    <a href="{{ route('transaction.create') }}" class="menu-link"> Record Bank Deposit </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('account.category') }}" class="menu-link"> Record Withdrawal </a>
+                    <a href="{{ route('transaction.create') }}" class="menu-link"> Record Withdrawal </a>
                 </li>
+
+                @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'accountant')
+                <li class="menu-item">
+                    <a href="{{ route('transaction.authorization') }}" class="menu-link">Authorize Transaction </a>
+                </li>
+                @endif
 
 
             </ul>
@@ -109,7 +115,7 @@
 
                 @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'accountant')
                 <li class="menu-item">
-                    <a href="{{ route('admin.approve-transection') }}" class="menu-link"> Approve Transection </a>
+                    <a href="{{ route('transaction.authorization') }}" class="menu-link">Authorize Transaction </a>
                 </li>
                 @endif
 

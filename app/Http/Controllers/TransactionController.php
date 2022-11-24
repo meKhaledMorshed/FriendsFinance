@@ -81,38 +81,56 @@ class TransactionController extends Controller
         }
     }
 
-    public function update(Request $request)
+    public function pullTransactions($filter = null)
     {
         try {
-            $request->validate([
-                'id'        => 'nullable|exist:transactions,id',
-                'debit'     => 'required|exists:accounts,accountNumber',
-                'credit'    => 'required|exists:accounts,accountNumber',
-                'amount'    => 'required|numeric',
-                'narration' => 'nullable|string|max:255'
-            ]);
 
-            $data = [
-                'debitAccount'  => $request->debit,
-                'creditAccount' => $request->debit,
-                'amount'        => $request->amount,
-                'narration'     => $request->narration,
-            ];
+            if ($filter == null) {
+                $results = Transaction::latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
 
-            DB::beginTransaction();
+            $filter = strtolower($filter);
 
-            DB::commit();
-            return response('Request successfully executed', 201);
+            if ($filter == 'all') {
+                $results = Transaction::latest('modifiedDate')->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
 
-            //try end here
+            $filters = ['authorize' => 1, 'unauthorize' => 0, 'reject' => -1, 'pending' => null];
+
+            if (array_key_exists($filter, $filters)) {
+                $filter = $filters[$filter];
+
+                $results = Transaction::where('isAuth', $filter)->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            if ($filter != null) {
+                $results = Transaction::where('id', $filter)
+                    ->orwhere('branchID', 'like', '%' . $filter . '%')
+                    ->orwhere('catID', 'like', '%' . $filter . '%')
+                    ->orwhere('accountName', 'like', '%' . $filter . '%')
+                    ->orwhere('accountNumber', 'like', '%' . $filter . '%')
+                    ->orwhere('remarks', 'like', '%' . $filter . '%')
+                    ->latest('modifiedDate')->limit(10)->get();
+                $results->count() > 0 ?: throw  new Exception('No data found.');
+                return response($results->toJson(), 200);
+            }
+
+            throw  new Exception('No data found.');
+
+            //end
+
         } catch (\Exception $e) {
-            DB::rollBack();
             date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from create@TransactionController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
-            return response('Request not executed', 406);
+            error_log("Error from pullAccounts@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            return response('No Transaction found', 404);
         }
     }
-
     public function pullTxnByAdmin($filter = null)
     {
         try {
@@ -160,7 +178,39 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             date_default_timezone_set('Asia/Dhaka');
             error_log("Error from pullAccounts@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
-            return response('No Account found', 404);
+            return response('No Data found', 404);
         }
     }
+
+
+    // change user's address status  
+    public function txnAuthorization($change = null, $id = null)
+    {
+        try {
+
+            $changeArray = ['unauthorize' => 0, 'reject' => -1, 'pending' => null];
+
+            if (array_key_exists($change, $changeArray) && $id != null) {
+                $value = $changeArray[$change];
+                $update = DB::table('transactions')->where('id', $id)->update(['isAuth' => $value, 'authBy' => null, 'modifiedBy' => $this->adminUID()]);
+            }
+
+            if ($change == 'authorize' && $id != null) {
+                $update = DB::table('transactions')->where('id', $id)->update(['isAuth' => 1, 'authBy' => $this->adminUID()]);
+            }
+
+            $update ?: throw new Exception($change . ' request is not successfull');
+            return response($change . ' request is successfull', 201);
+
+            //try end
+        } catch (Exception $e) {
+            date_default_timezone_set('Asia/Dhaka');
+            error_log("Error from txnAuthorization@AuthorizationController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            //send response to Requester
+            return response('Request failed.', 304);
+        }
+    }
+
+
+    //
 }

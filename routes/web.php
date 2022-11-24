@@ -80,10 +80,16 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
     Route::post('user/create/{scope?}', [UserController::class, 'create'])->name('admin.user.create');
 
     // Transaction 
+    Route::view('transaction/view', 'backend.transaction.index')->name('transaction.view');
     Route::view('transaction/create', 'backend.transaction.create')->name('transaction.create');
     Route::post('transaction/create', [TransactionController::class, 'create'])->name('transaction.create.post');
 
-    Route::get('transaction/view/inserted-by-current-admin/{filter?}', [TransactionController::class, 'pullTxnByAdmin'])->name('transaction.pull.txnByAdmin');
+    Route::get('transaction/pull/global/{filter?}', [TransactionController::class, 'pullTransactions'])->name('transaction.pull.transactions');
+    Route::get('transaction/pull/inserted-by-current-admin/{filter?}', [TransactionController::class, 'pullTxnByAdmin'])->name('transaction.pull.txnByAdmin');
+
+    // need middleware for only master & super admin and accountent & teller
+    Route::view('transaction/view/authorization', 'backend.transaction.authorization')->name('transaction.authorization');
+    Route::get('transection/authorization/{request?}/{id?}', [TransactionController::class, 'txnAuthorization'])->name('transaction.authorization.request');
 
 
     Route::middleware('isEditor')->group(function () {
@@ -166,8 +172,6 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         Route::get('change-status-select-option/{request?}/{id?}', [SelectOptionController::class, 'changeStatusSO'])->name('admin.changeStatusSO');
     });
 
-    // need middleware for only master & super admin and accountent & teller
-    Route::get('approve-transection', [AuthorizationController::class, 'approve_transection'])->name('admin.approve-transection');
 
 
     //end here//

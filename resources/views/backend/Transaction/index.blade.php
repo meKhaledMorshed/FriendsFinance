@@ -11,7 +11,7 @@
 
     <!-- ----------------------------------------------------------- view-1 ------------------------------------------------------------------------ -->
 
-    <div class="row g-2">
+    <div class="row views d-none" id="view_1">
         <div class="col-6">
             <div class="card ">
                 <div class="card-body">
@@ -20,6 +20,7 @@
                         <h5 class="mb-0" id="formTitle">Record new Transaction</h5>
                         <div>
                             <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Add New</label>
+                            <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('view_2')">View Transactions</label>
                         </div>
                     </div>
 
@@ -66,49 +67,52 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header  pb-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Latest Transactions</h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="d-none small" id="searchtaskIndicator"> <img src="/assets/img/icons/load-indicator.gif" height="15" /></span>
-                            <div class="input-group input-group-sm">
-                                <input type="text" class="form-control" placeholder="Search...." onblur="loadRecords(this.value)" />
-                                <span class="input-group-text" role="button"><i class='bx bx-search'></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm table-bordered table-hover">
-                        <thead>
-                            <tr class="text-center">
-                                <th>Account</th>
-                                <th>Narration</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl_body">
-                            <!-- rows will populate here by js  -->
-                            <tr class="text-center">
-                                <td colspan="5">
-                                    <div id="defaultRow">
-                                        <img src="{{ asset('assets') }}/img/icons/load-indicator-4.gif" height="300" />
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- ----------------------------------------------------------- view-2 ------------------------------------------------------------------------ -->
-    <!-- code for view-2 -->
+    <div class="card mb-2 views " id="view_2">
+        <div class="card-header py-2">
+            <div class="d-flex justify-content-between align-items-center ">
+                <h5 class="mb-0">Transactions </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="Search...." onblur="loadRecords(this.value)" />
+                        <span class="input-group-text" role="button"><i class='bx bx-search'></i></span>
+                    </div>
+                    <span class="d-none small" id="searchtaskIndicator"> <img src="/assets/img/icons/load-indicator.gif" height="15" /></span>
+                </div>
+                <label for="contact" class="btn btn-sm btn-info" onclick="toggleView('addNew')">Add New</label>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-sm table-bordered table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Narration</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Br</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl_body">
+                    <!-- rows will populate here by js  -->
+                    <tr class="text-center">
+                        <td colspan="9">
+                            <div id="defaultRow">
+                                <img src="{{ asset('assets') }}/img/icons/load-indicator-4.gif" height="300" />
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 
 
 
@@ -123,6 +127,10 @@
     /* extra css will go from here  */
     .igt-1 {
         width: 4rem;
+    }
+
+    .igt-2 {
+        width: 12rem;
     }
 </style>
 
@@ -139,7 +147,7 @@
 
         document.getElementById('searchtaskIndicator').classList.remove('d-none');
 
-        const res = await fetch("{{ route('transaction.pull.txnByAdmin') }}/" + filter);
+        const res = await fetch("{{ route('transaction.pull.transactions') }}/" + filter);
 
         if (res.status == 200) {
             const Records = await res.json();
@@ -147,7 +155,7 @@
         } else {
             document.getElementById('searchtaskIndicator').classList.add('d-none');
             let tBody = document.getElementById('tbl_body');
-            let tr = ` <tr class="text-center"> <td colspan="11">No data found for ${filter}.</td> </tr> `;
+            let tr = ` <tr class="text-center"> <td colspan="9">No data found for ${filter}.</td> </tr> `;
             tBody.innerHTML = tr;
         }
     }
@@ -174,6 +182,11 @@
                 while (num.length < 10) num = "0" + num;
                 return num;
             }
+            const BranchID = () => {
+                let num = record.branchID.toString();
+                while (num.length < 3) num = "0" + num;
+                return num;
+            }
             const dateOptions = {
                 year: 'numeric',
                 month: 'short',
@@ -181,20 +194,16 @@
             };
             const date = new Date(record.modifiedDate).toLocaleDateString('en-us', dateOptions);
 
-
             tr += ` 
                     <tr class="text-center small">
-                        <td>
-                            <div>Dr.  ${DebitAccountNumber()}🔺</div>  
-                            <div>Cr.  ${CreditAccountNumber()}🔻 </div>    
-                        </td>
-                        
-                        <td> ${record.narration} </td>
-                        <td class="text-end fw-bold">${record.amount} ₺</td>    
-                        <td> 
-                            <div>${status} </div>  
-                            <div>${date} </div>    
-                        </td>
+                        <td> ${record.id}  </td>
+                        <td> ${DebitAccountNumber()}  </td>
+                        <td> ${CreditAccountNumber()}  </td>
+                        <td> ${record.narration}  </td>
+                        <td class="text-end"> ${record.amount} ₺</td>
+                        <td> ${status}  </td>
+                        <td> ${date}  </td>
+                        <td> ${BranchID()} </td>    
                         <td> 
                             <button class="btn btn-sm btn-warning px-1" onclick="toggleView('update',{
                                     form:'update', 
@@ -223,12 +232,19 @@
             view.classList.add('d-none');
         }
 
+        if (view == 'view_2') {
+            document.getElementById('view_2').classList.remove('d-none');
+            loadRecords();
+        }
         if (view == 'addNew') {
             form.reset();
+            document.getElementById('view_1').classList.remove('d-none');
             document.getElementById('id').disabled = true;
-            document.getElementById('formTitle').innerHTML = 'Record new Transaction';
+            document.getElementById('formTitle').innerHTML = 'Add New Transaction';
         }
         if (view == 'update') {
+            document.getElementById('view_1').classList.remove('d-none');
+
             document.getElementById('id').disabled = false;
 
             document.getElementById('id').value = data.id;
@@ -264,15 +280,15 @@
 
 
     // sned api request for account name
-    async function pullAccountName(accNum, elmntID) {
+    async function pullAccountName(accNum, elementID) {
         const res = await fetch("{{ route('admin.getAccountName') }}/" + accNum);
         if (res.status == 200) {
 
             const name = await res.text();
-            document.getElementById(elmntID).value = name;
+            document.getElementById(elementID).value = name;
 
         } else {
-            document.getElementById(elmntID).value = '';
+            document.getElementById(elementID).value = '';
             swal('Please input correct Account Number.');
         }
     }

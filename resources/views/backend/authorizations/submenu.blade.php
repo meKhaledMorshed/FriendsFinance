@@ -16,16 +16,16 @@
             <a class="btn btn-sm" id="btnVerifyUserDocs" href="{{ route('admin.verifyUserDocuments') }}"> Documents</a>
         </li>
         <li class="nav-item">
-            <a class="btn btn-sm" href="{{ route('admin.approve-nominee') }}"> Nominee</a>
+            <a class="btn btn-sm" href="#"> Nominee</a>
         </li>
         @endif
 
         @if($admin->role == 'master' || $admin->role == 'super' || $admin->role == 'accountant')
         <li class="nav-item">
-            <a class="btn btn-sm" href="{{ route('admin.approve-account') }}"> Account</a>
+            <a class="btn btn-sm" href="#"> Account</a>
         </li>
         <li class="nav-item">
-            <a class="btn btn-sm" href="{{ route('admin.approve-transection') }}"> Transection</a>
+            <a class="btn btn-sm" href="{{ route('transaction.authorization') }}"> Transection</a>
         </li>
         @endif
 
