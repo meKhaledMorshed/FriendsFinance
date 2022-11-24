@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('photo', 255)->unique()->nullable();
 
             $table->enum('relation', ['Father', 'Mother', 'Brother', 'Sister', 'Wife', 'Other']);
-            $table->unsignedFloat('percentage', 3)->default(100);
+            $table->unsignedFloat('percentage', 5)->default(100);
 
             $table->string('nid', 20)->nullable();
             $table->string('passport', 20)->nullable();

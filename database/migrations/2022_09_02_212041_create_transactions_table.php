@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('debitAccount')->constrained('accounts', 'accountNumber');
             $table->unsignedBigInteger('creditAccount')->constrained('accounts', 'accountNumber');
-            $table->decimal('amount', 12, 4)->comment('Transaction amount.');
+            $table->decimal('amount', 12)->comment('Transaction amount.');
 
             $table->string('narration', 255);
 

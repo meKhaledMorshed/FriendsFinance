@@ -343,12 +343,12 @@ class AccountController extends Controller
 
             $request->validate([
                 'id'             => 'nullable|exists:nominees,id',
-                'accountNumber'  => 'required|exists:accounts,accountNumber',
-                'name'           => 'required|string|max:100',
-                'dob'            => 'required|date|after:01/01/1970|before:tomorrow',
-                'gender'         => 'required|exists:select_options,optionValue',
-                'relation'       => 'required|in:Mother,Father,Brother,Sister,Spouse,Other',
-                'share'          => 'required|numiric|min:1|max:100',
+                'accountNumber'  => 'nullable|exists:accounts,accountNumber',
+                'name'           => 'nullable|string|max:100',
+                'dob'            => 'nullable|date|after:01/01/1970|before:tomorrow',
+                'gender'         => 'nullable|exists:select_options,optionValue',
+                'relation'       => 'nullable|in:Mother,Father,Brother,Sister,Spouse,Other',
+                'share'          => 'nullable|numeric|min:1|max:100',
                 'email'          => 'nullable|email|max:100',
                 'mobile'         => 'nullable|max:20',
                 'nid'            => 'nullable|regex:/[A-Za-z0-9]{8,25}/',
@@ -360,44 +360,70 @@ class AccountController extends Controller
                 'authorization'  => 'nullable|in:-1,0,1'
             ]);
 
-            $ck_inputs = [
-                'name'      => 'Nominee name is required',
-                'dob'       => 'Nominee birthday is required',
-                'gender'    => 'Nominee gender is required',
-                'dob'       => 'Nominee birthday is required',
-                'dob'       => 'Nominee birthday is required',
-                'dob'       => 'Nominee birthday is required',
+            $inputs = [
+                'accountNumber' => 'Account Number',
+                'name'          => 'Nominee name',
+                'dob'           => 'Birthday',
+                'gender'        => 'Gender',
+                'relation'      => 'Relation',
+                'address'       => 'Address',
+                'dob'           => 'Birthday'
             ];
 
-            if ((!isset($request->id) || $request->id == null) && $request->category == null) {
-                return response('Please select a category.', 406);
-            }
-            if ((!isset($request->id) || $request->id == null) && $request->branch == null) {
-                return response('Please select a Branch.', 406);
+            foreach ($inputs as $key => $input) {
+                if ($request->$key == null) {
+                    return response("$input is required.", 406);
+                }
             }
 
-            $totalAccountExist = Account::where('branchID', $request->branch)->where('catID', $request->category)->count();
+            if ((!isset($request->id) || $request->id != null) && $request->photo == null) {
+                return response("Nominee Photo is required.", 406);
+            }
 
-            $account = [
-                'uid'           => $request->uid,
-                'accountName'   => $request->accountName,
+            $nominee = [
+                'accountNum' => $request->accountNumber,
+                'name'          => $request->name,
+                'birthday'      => $request->dob,
+                'gender'        => $request->gender,
+                'relation'      => $request->relation,
+                'percentage'    => $request->share != null ? $request->share : 100,
+                'nid'           => $request->nid,
+                'passport'      => $request->passport,
+                'email'         => $request->email,
+                'mobile'        => $request->mobile,
+                'address'       => $request->address,
                 'remarks'       => $request->remarks,
                 'isActive'      => $request->status,
                 'isAuth'        => $request->authorization,
                 'authBy'        => $request->authorization == null ?:  $this->adminUID()
             ];
 
+            if ($request->hasfile('photo')) {
+                $nominee['photo'] = uniqid('nominee_' . $request->accountNumber . '_') . time() . '.' . $request->photo->extension();
+            }
+
             DB::beginTransaction();
 
             if (isset($request->id) && $request->id != null) {
-                $account['modifiedBy'] = $this->adminUID();
-                DB::table('accounts')->where('id', $request->id)->update($account) ?: throw new Exception('Account not Updated.');
+
+                if ($request->hasfile('photo')) {
+                    $result = DB::table('nominees')->find($request->id, 'photo');
+                    $oldFile = $result->photo;
+                }
+
+                $nominee['modifiedBy'] = $this->adminUID();
+                DB::table('nominees')->where('id', $request->id)->update($nominee) ?: throw new Exception('Account not Updated.');
+
+                // move photo to server folder
+                if ($request->hasfile('photo')) {
+                    // move photo to server folder 
+                    $request->photo->move(public_path('assets/photos'), $nominee['photo']) ?: throw new Exception('Nominee photo not moved to folder.');
+                    $oldFile == null ?: unlink(public_path('assets/photos/' . $oldFile));
+                }
             } else {
-                $account['branchID'] = $request->branch;
-                $account['catID'] = $request->category;
-                $account['accountNumber'] = sprintf('%03d', $request->branch) . sprintf('%03d', $request->category) . sprintf('%04d', $totalAccountExist + 1);
-                $account['insertedBy'] = $this->adminUID();
-                DB::table('accounts')->insert($account) ?: throw new Exception('Account not Created.');
+                $nominee['insertedBy'] = $this->adminUID();
+                DB::table('nominees')->insert($nominee) ?: throw new Exception('Account not Created.'); // move photo to server folder 
+                $request->photo->move(public_path('assets/photos'), $nominee['photo']) ?: throw new Exception('Nominee photo not moved to folder.');
             }
 
             DB::commit();
@@ -407,7 +433,7 @@ class AccountController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from postAccountForm@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
+            error_log("Error from postNomineeForm@AccountController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
             return response('Request not executed', 406);
         }
     }
