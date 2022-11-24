@@ -80,7 +80,7 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
     Route::post('user/create/{scope?}', [UserController::class, 'create'])->name('admin.user.create');
 
     // Transaction 
-    Route::view('transaction/create', 'backend.transaction.index')->name('transaction.create');
+    Route::view('transaction/create', 'backend.transaction.create')->name('transaction.create');
     Route::post('transaction/create', [TransactionController::class, 'create'])->name('transaction.create.post');
 
     Route::get('transaction/view/inserted-by-current-admin/{filter?}', [TransactionController::class, 'pullTxnByAdmin'])->name('transaction.pull.txnByAdmin');
