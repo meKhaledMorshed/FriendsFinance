@@ -36,6 +36,7 @@ class AdminController extends Controller
             $admin['writePermit']  = $result->permission->writePermit;
             $admin['editPermit']   = $result->permission->editPermit;
             $admin['deletePermit'] = $result->permission->deletePermit;
+            $admin['branchID']     = $result->branchID;
             $admin['branch']       = $result->branch->name;
 
             $this->admin = (object) $admin;

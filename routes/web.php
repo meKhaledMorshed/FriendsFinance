@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckpostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\SelectOptionController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,13 +79,18 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
     Route::get('user/create', [UserController::class, 'userForm'])->name('admin.user.userForm');
     Route::post('user/create/{scope?}', [UserController::class, 'create'])->name('admin.user.create');
 
+    // Transaction 
+    Route::view('transaction/create', 'backend.transaction.index')->name('transaction.create');
+    Route::post('transaction/create', [TransactionController::class, 'create'])->name('transaction.create.post');
+
+    Route::get('transaction/view/inserted-by-current-admin/{filter?}', [TransactionController::class, 'pullTxnByAdmin'])->name('transaction.pull.txnByAdmin');
+
 
     Route::middleware('isEditor')->group(function () {
 
         // update user 
         Route::get('user/update/{id?}', [UserController::class, 'updateUser'])->name('admin.updateUser');
         Route::post('user/update/{scope?}', [UserController::class, 'update'])->name('admin.postUpdateUser');
-
 
         // 
     });
@@ -142,7 +148,6 @@ Route::middleware('isAdmin')->prefix('admin')->group(function () {
         //account nominee
         Route::view('account/nominee', 'backend.account.nominee')->name('account.nominee');
         Route::post('account/nominee', [AccountController::class, 'postNomineeForm'])->name('account.nominee.postForm');
-
         Route::get('account/nominee/pull/{filter?}', [AccountController::class, 'pullNominees'])->name('account.pullNominees');
 
 

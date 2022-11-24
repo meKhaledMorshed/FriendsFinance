@@ -76,7 +76,7 @@
                     <a href="{{ route('account') }}" class="menu-link"> Show Transactions </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('account') }}" class="menu-link"> Add Transactions </a>
+                    <a href="{{ route('transaction.create') }}" class="menu-link"> Add Transactions </a>
                 </li>
                 <li class="menu-item">
                     <a href="{{ route('account.category') }}" class="menu-link"> Record Bank Deposit </a>
