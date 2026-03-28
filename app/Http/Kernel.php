@@ -53,17 +53,6 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        // custom middleware 
-        'canLogin' => \App\Http\Middleware\LoginCheck::class,
-        'isAddEntity' => \App\Http\Middleware\AddEntity::class,
-        'isTwoFA' => \App\Http\Middleware\TwoFACheck::class,
-        'isAdmin' => \App\Http\Middleware\AdminAuthCheck::class,
-        'isUser' => \App\Http\Middleware\UserAuthCheck::class,
-        'isAuthorizer' => \App\Http\Middleware\AuthorizerCheck::class,
-        'isEditor' => \App\Http\Middleware\EditorCheck::class,
-        'isMasterAdmin' => \App\Http\Middleware\MasterAdminCheck::class,
-        // end custom middleware 
-
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

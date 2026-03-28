@@ -3,52 +3,55 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+class User extends Authenticatable
 {
-    protected $hidden = ['password'];
+    use HasFactory, Notifiable;
 
-    public $timestamps = false;
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'is_active',
+    ];
 
-    use HasFactory;
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    public function userinfo()
-    {
-        return $this->hasOne(User_info::class, 'uid', 'id');
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'is_active' => 'boolean',
+    ];
 
-    public function presentAddress()
-    {
-        return $this->hasOne(User_address::class, 'uid', 'id')->where('type', 'Present');
-    }
-
-    public function permanentAddress()
-    {
-        return $this->hasOne(User_address::class, 'uid', 'id')->where('type', 'Permanent');
-    }
-    public function usernid()
-    {
-        return $this->hasOne(User_document::class, 'uid', 'id')->where('type', 'NID');
-    }
-
-    public function addresses()
-    {
-        return $this->hasMany(User_address::class, 'uid', 'id');
-    }
-
-    public function documents()
-    {
-        return $this->hasMany(User_document::class, 'uid', 'id');
-    }
-
-    public function contacts()
-    {
-        return $this->hasMany(Alternate_contact::class, 'uid', 'id');
-    }
-
+    // Relationships
     public function admin()
     {
-        return $this->hasOne(Admin::class, 'uid', 'id');
+        return $this->hasOne(Admin::class, 'user_id');
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class, 'user_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'created_by');
+    }
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeAdmins($query)
+    {
+        return $query->whereHas('admin');
     }
 }

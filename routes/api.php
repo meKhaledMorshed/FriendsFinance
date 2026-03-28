@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-/* |||||||||||||||||||||||||||||||||||||||||||||||||||----- Start -----||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
-
-Route::get('select-option/{key?}/{parent?}/{group?}', [ApiController::class, 'selectOption'])->name('so.datalist');
-
-/* |||||||||||||||||||||||||||||||||||||||||||||||||||------ End ------||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
+// API resource routes can be added here for JSON responses
+Route::middleware('auth:sanctum')->group(function () {
+    // Add API routes as needed
+});

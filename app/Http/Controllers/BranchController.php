@@ -3,97 +3,61 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
-    public $name = null;
-    public $type = null;
-    public $details = null;
-
-    function __construct($id = null)
+    public function index()
     {
-        $result = DB::table('branches')->where('id', '=', $id)->first();
-        if ($result) {
-            $this->name = $result->name;
-            $this->type = $result->type;
-            $this->details = $result->details;
-        }
+        $branches = Branch::paginate(15);
+        return view('branches.index', compact('branches'));
     }
 
-    public function pullBranch()
+    public function create()
     {
-        try {
-
-            $branches = Branch::all()->toJson();
-
-            return response($branches);
-            //end
-        } catch (\Exception $e) {
-            date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from viewBranch@BranchController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
-            return response('No data found', 401);
-        }
+        return view('branches.create');
     }
 
-    public function pullBranchName($id = null)
+    public function store(Request $request)
     {
-        try {
-            if ($id == null) {
-                return response('No Branch ID given', 400);
-            }
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:branches',
+            'code' => 'required|string|max:50|unique:branches',
+            'location' => 'required|string|max:500',
+        ]);
 
-            $branch = Branch::find($id);
-            $branch != null ?: throw  new Exception('No data found.');
-            return response($branch->branchName, 200);
+        Branch::create($validated);
 
-            //end
-
-        } catch (\Exception $e) {
-            date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from pullBranchName@BranchController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
-            return response('No Branch found', 404);
-        }
+        return redirect()->route('branches.index')->with('success', 'Branch created successfully.');
     }
 
-    public function addOrUpdateBranch(Request $request)
+    public function show(Branch $branch)
     {
-        try {
+        return view('branches.show', compact('branch'));
+    }
 
-            $request->validate([
-                'branchName' => 'required|string|min:3|max:50',
-                'type' => 'required',
-                'address' => 'string'
-            ]);
+    public function edit(Branch $branch)
+    {
+        return view('branches.edit', compact('branch'));
+    }
 
-            $data = [
-                'branchName' => $request->branchName,
-                'type' => $request->type,
-                'address' => $request->address,
-                'isActive' => $request->status,
-                'remarks' => $request->remarks,
-                'isAuth' => $request->authorization,
-                'AuthBy' => session()->get('userID'),
+    public function update(Request $request, Branch $branch)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:branches,name,' . $branch->id,
+            'code' => 'required|string|max:50|unique:branches,code,' . $branch->id,
+            'location' => 'required|string|max:500',
+        ]);
 
-            ];
+        $branch->update($validated);
 
-            if (!isset($request->id) || $request->id == null) {
-                $data['insertedBy'] = session()->get('userID');
+        return redirect()->route('branches.show', $branch)->with('success', 'Branch updated successfully.');
+    }
 
-                DB::table('branches')->insert($data) ?: throw new Exception('Branch not Added.');
-                return response('Branch Successfully added', 201);
-            } else if (isset($request->id) && $request->id != null) {
-                $data['modifiedBy'] = session()->get('userID');
+    public function destroy(Branch $branch)
+    {
+        $branch->delete();
 
-                DB::table('branches')->where('id', $request->id)->update($data) ?: throw new Exception('Branch not updated.');
-                return response('Branch Successfully updated', 201);
-            }
-        } catch (\Exception $e) {
-            date_default_timezone_set('Asia/Dhaka');
-            error_log("Error from addOrUpdateBranch@BranchController | " . date('d M Y H:i:s', time()) . " | " . $e->getMessage());
-            return response('Data not inserted', 401);
-        }
+        return redirect()->route('branches.index')->with('success', 'Branch deleted successfully.');
     }
 }

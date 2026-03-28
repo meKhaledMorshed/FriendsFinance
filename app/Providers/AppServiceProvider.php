@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\EntityCoreController;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,12 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $entity = new EntityCoreController;
-        View::share('entity', $entity->entity);
-
-        View::composer('backend.*', function ($view) {
-            $admin = new AdminController();
-            $view->with('admin', $admin->admin);
-        });
+        //
     }
 }
